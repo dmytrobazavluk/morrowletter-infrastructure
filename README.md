@@ -2,7 +2,7 @@
 
 ## Local Stack
 
-Start MySQL and the backend:
+Start the full local stack:
 
 ```bash
 docker compose up --build -d
@@ -18,10 +18,21 @@ The backend listens on `127.0.0.1:8080`.
 
 The database listens on `127.0.0.1:3306`.
 
-Default local credentials:
+The stack includes:
+
+- `mysql`
+- `backend`
+
+Default database credentials:
 
 - database: `morrowletter`
 - user: `morrowletter`
 - password: `morrowletter`
 
 Data is persisted in `./mysql/data`.
+
+Rebuild the backend image after backend changes:
+
+```bash
+docker compose up --build -d backend
+```
