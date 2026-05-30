@@ -1,18 +1,20 @@
 # Infrastructure
 
-## Local MySQL
+## Local Stack
 
-Start MySQL:
+Start MySQL and the backend:
 
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
 
-Stop MySQL:
+Stop the stack:
 
 ```bash
 docker compose down
 ```
+
+The backend listens on `127.0.0.1:8080`.
 
 The database listens on `127.0.0.1:3306`.
 
