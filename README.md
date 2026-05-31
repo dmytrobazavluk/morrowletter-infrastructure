@@ -16,7 +16,7 @@ docker compose down
 
 The backend listens on `127.0.0.1:8080`.
 
-The database listens on `127.0.0.1:3306`.
+The database listens on `127.0.0.1:3307`.
 
 The stack includes:
 
