@@ -22,7 +22,6 @@ services:
     build:
       context: ../backend
       dockerfile: Dockerfile
-    container_name: morrowletter-backend
     restart: unless-stopped
     environment:
       DB_HOST: mysql
@@ -33,5 +32,15 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    expose:
+      - "8080"
+  envoy:
+    image: envoyproxy/envoy:v1.33-latest
+    container_name: morrowletter-envoy
+    restart: unless-stopped
+    depends_on:
+      - backend
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
     ports:
       - "8080:8080"
