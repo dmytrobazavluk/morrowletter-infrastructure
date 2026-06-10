@@ -18,10 +18,11 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
-  backend:
+  backend-api:
     build:
       context: ../backend
       dockerfile: Dockerfile
+      target: api-runtime
     restart: unless-stopped
     environment:
       DB_HOST: mysql
@@ -34,12 +35,59 @@ services:
         condition: service_healthy
     expose:
       - "8080"
+  backend-job-dispatch:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      target: job-runtime
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: morrowletter
+      DB_USER: morrowletter
+      DB_PASSWORD: morrowletter
+      APP_JOB_DB_MAX_POOL_SIZE: "4"
+      APP_JOB_DB_MIN_IDLE: "1"
+      APP_JOB_DB_CONNECTION_TIMEOUT_MS: "30000"
+      APP_JOB_DB_IDLE_TIMEOUT_MS: "600000"
+      APP_JOB_DB_MAX_LIFETIME_MS: "1800000"
+      APP_JOBS_DISPATCH_ENABLED: "true"
+      APP_JOBS_DISPATCH_POLL_INTERVAL_MS: "30000"
+      APP_JOBS_DISPATCH_BATCH_SIZE: "100"
+      APP_JOBS_CLEANUP_ENABLED: "false"
+    depends_on:
+      mysql:
+        condition: service_healthy
+  backend-job-cleanup:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      target: job-runtime
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: morrowletter
+      DB_USER: morrowletter
+      DB_PASSWORD: morrowletter
+      APP_JOB_DB_MAX_POOL_SIZE: "2"
+      APP_JOB_DB_MIN_IDLE: "1"
+      APP_JOB_DB_CONNECTION_TIMEOUT_MS: "30000"
+      APP_JOB_DB_IDLE_TIMEOUT_MS: "600000"
+      APP_JOB_DB_MAX_LIFETIME_MS: "1800000"
+      APP_JOBS_DISPATCH_ENABLED: "false"
+      APP_JOBS_CLEANUP_ENABLED: "true"
+      APP_JOBS_CLEANUP_POLL_INTERVAL_MS: "300000"
+    depends_on:
+      mysql:
+        condition: service_healthy
   envoy:
     image: envoyproxy/envoy:v1.33-latest
     container_name: morrowletter-envoy
     restart: unless-stopped
     depends_on:
-      - backend
+      - backend-api
     volumes:
       - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
     ports:
