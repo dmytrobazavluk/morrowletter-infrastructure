@@ -30,6 +30,8 @@ services:
       DB_NAME: morrowletter
       DB_USER: morrowletter
       DB_PASSWORD: morrowletter
+      APP_DISPATCH_DELAY_MINUTES: 5
+      APP_DISPATCH_GRANULARITY_MINUTES: 1
     depends_on:
       mysql:
         condition: service_healthy
@@ -56,6 +58,8 @@ services:
       APP_JOBS_DISPATCH_POLL_INTERVAL_MS: "30000"
       APP_JOBS_DISPATCH_BATCH_SIZE: "100"
       APP_JOBS_CLEANUP_ENABLED: "false"
+      APP_DISPATCH_DELAY_MINUTES: 5
+      APP_DISPATCH_GRANULARITY_MINUTES: 1
     depends_on:
       mysql:
         condition: service_healthy
